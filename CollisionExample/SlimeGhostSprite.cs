@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using CollisionExample.Collisions;
 
 namespace CollisionExample
 {
@@ -23,11 +24,23 @@ namespace CollisionExample
 
         private bool flipped;
 
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(200-16, 200-16), 32, 32);
+
+		/// <summary>
+		/// The bounding volume of the sprite
+		/// </summary>
+		public BoundingRectangle Bounds => bounds;
+
         /// <summary>
-        /// Loads the sprite texture using the provided ContentManager
+        /// The color to blend with the ghost
         /// </summary>
-        /// <param name="content">The ContentManager to load with</param>
-        public void LoadContent(ContentManager content)
+        public Color Color { get; set; } = Color.White;
+
+		/// <summary>
+		/// Loads the sprite texture using the provided ContentManager
+		/// </summary>
+		/// <param name="content">The ContentManager to load with</param>
+		public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("slime");
         }
@@ -59,7 +72,11 @@ namespace CollisionExample
                 position += new Vector2(1, 0);
                 flipped = false;
             }
-        }
+
+            // Update the bounds
+            bounds.X = position.X - 16;
+			bounds.Y = position.Y - 16;
+		}
 
         /// <summary>
         /// Draws the sprite using the supplied SpriteBatch
@@ -69,7 +86,7 @@ namespace CollisionExample
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteEffects spriteEffects = (flipped) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            spriteBatch.Draw(texture, position, null, Color.White, 0, new Vector2(0, 0), 0.25f, spriteEffects, 0);
+            spriteBatch.Draw(texture, position, null, Color, 0, new Vector2(64, 64), 0.25f, spriteEffects, 0);
         }
     }
 }
